@@ -1,7 +1,7 @@
 var falafel = require('fresh-falafel');
 var defaults = require('lodash.defaults');
-// inject esprima to fresh-falafel
-falafel.setParser(require('esprima-fb').parse);
+// inject espree to fresh-falafel
+falafel.setParser(require('espree').parse);
 
 function hasXJSElementAsParent( node ) {
   while ( node.parent ) {
@@ -12,6 +12,35 @@ function hasXJSElementAsParent( node ) {
   }
   return false;
 }
+
+var parseOptions = {
+    loc: true,
+    ecmaFeatures: {
+        arrowFunctions: true,
+        blockBindings: true,
+        destructuring: true,
+        regexYFlag: true,
+        regexUFlag: true,
+        templateStrings: true,
+        binaryLiterals: true,
+        octalLiterals: true,
+        unicodeCodePointEscapes: true,
+        defaultParams: true,
+        restParams: true,
+        forOf: true,
+        objectLiteralComputedProperties: true,
+        objectLiteralShorthandMethods: true,
+        objectLiteralShorthandProperties: true,
+        objectLiteralDuplicateProperties: true,
+        generators: true,
+        spread: true,
+        classes: true,
+        modules: true,
+        jsx: true,
+        globalReturn: true
+    }
+};
+
 
 module.exports = {
 
@@ -56,7 +85,7 @@ module.exports = {
     var sections = me._sections = [];
 
     // parse the code
-    code = falafel(code,{ loc: true }, function (node) {
+    code = falafel(code, parseOptions, function (node) {
       // if a JSX node
       if (node.type === 'JSXElement' && !hasXJSElementAsParent(node)) {
         // save the source
@@ -90,7 +119,7 @@ module.exports = {
 
   _prepareToProcessTags: function (source) {
     var me = this;
-    var code = falafel(source, { loc: true }, function (node) {
+    var code = falafel(source, parseOptions, function (node) {
       if (node.type === 'JSXElement' && !node.selfClosing) {
         if (node.children && node.children.length > 0) {
           if (!me._keepUnformatted(node.openingElement.name.name)) {
@@ -151,7 +180,7 @@ module.exports = {
       return code;
     }
     // otherwise
-    return falafel(code, { loc: true },function (node) {
+    return falafel(code, parseOptions, function (node) {
       // check for the node we added, it should be an UnaryExpression, void and have the
       // custom comment we have included
       if (node.type === 'UnaryExpression' &&

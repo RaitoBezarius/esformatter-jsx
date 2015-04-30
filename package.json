@@ -32,14 +32,14 @@
   ],
   "peerDependencies": {},
   "dependencies": {
-    "esprima-fb": "^13001.1.0-dev-harmony-fb",
+    "espree": "*",
     "fresh-falafel": "^0.2.6",
     "js-beautify": "^1.5.4",
     "lodash.defaults": "^3.0.0"
   },
   "devDependencies": {
     "chai": "*",
-    "esformatter": "^0.5.0",
+    "esformatter": "https://github.com/RaitoBezarius/esformatter#espree",
     "mocha": "*",
     "read-json-sync": "^1.1.0"
   }
